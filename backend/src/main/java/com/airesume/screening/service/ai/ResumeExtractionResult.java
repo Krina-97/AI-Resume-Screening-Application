@@ -10,6 +10,7 @@ public class ResumeExtractionResult {
     String email;
     String phone;
     String skills;
+    String strengths;
     String experience;
     String education;
     String certifications;

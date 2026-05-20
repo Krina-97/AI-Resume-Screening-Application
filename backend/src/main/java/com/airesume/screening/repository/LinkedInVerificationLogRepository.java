@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface LinkedInVerificationLogRepository extends JpaRepository<LinkedInVerificationLog, Long> {
     List<LinkedInVerificationLog> findByCandidateIdOrderByVerifiedAtDesc(Long candidateId);
+
+    void deleteByCandidateId(Long candidateId);
 }

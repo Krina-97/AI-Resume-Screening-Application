@@ -42,15 +42,18 @@ Frontend (`frontend/`): React 18 + Vite + TypeScript + Tailwind + React Router +
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
-| `SPRING_PROFILES_ACTIVE` | `dev` = H2 in memory, `mysql` = local MySQL | `dev` |
+| `SPRING_PROFILES_ACTIVE` | `dev` = file-based H2 (under user home), `mysql` = MySQL | `dev` |
 | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD` | MySQL (when profile `mysql`) | `localhost`, `3306`, `ai_resume_screening`, `root`, `root` |
 | `JWT_SECRET` | HS256 signing secret (≥ 32 chars recommended) | see `application.yml` |
 | `JWT_EXPIRATION_MS` | Token TTL | `86400000` |
-| `OPENAI_API_KEY` | OpenAI chat completions | empty |
+| `OPENAI_API_KEY` | OpenAI resume extraction + job match scoring | empty |
 | `OPENAI_MODEL` | Model name | `gpt-4o-mini` |
 | `OPENAI_BASE_URL` | API base | `https://api.openai.com/v1` |
-| `GEMINI_API_KEY`, `GEMINI_ENABLED` | Gemini provider | disabled |
+| `GEMINI_API_KEY` | Google Gemini API key ([AI Studio](https://aistudio.google.com/apikey)) | empty |
+| `GEMINI_ENABLED` | Set `true` when using Gemini | `false` |
 | `AI_PROVIDER` | `openai` or `gemini` | `openai` |
+
+After upload, match % vs the selected job sets status: **&lt;40% Rejected**, **40–60% New**, **&gt;60% Shortlisted**. See `backend/.env.example`.
 | `UPLOAD_DIR` | Resume storage | `./uploads/resumes` |
 | `SELENIUM_ENABLED`, `SELENIUM_HEADLESS`, `SELENIUM_SCREENSHOT_DIR` | Automation toggles | `true`, `true`, `./uploads/screenshots` |
 | `MAIL_*` | Optional SMTP for interview emails | see `application.yml` |
@@ -61,8 +64,8 @@ Frontend (`frontend/`): React 18 + Vite + TypeScript + Tailwind + React Router +
 
 | Profile | Storage | When to use |
 | --- | --- | --- |
-| **`dev`** (default) | In-memory H2 | Quick try — **data is lost** when you stop the backend |
-| **`mysql`** | MySQL on your PC | Jobs, candidates, and scores **stay saved** |
+| **`dev`** (default) | File-based H2 (`%USERPROFILE%\ai-resume-screening\h2-data\` on Windows) | Local dev — data **survives** backend restarts; no MySQL install |
+| **`mysql`** | MySQL on your PC | Teams / production-like — shared DB, Workbench, etc. |
 
 **Full setup guide:** [database/LOCAL-MYSQL-SETUP.md](database/LOCAL-MYSQL-SETUP.md)
 
@@ -81,7 +84,33 @@ mvn spring-boot:run
 
 ### Backend
 
-**With persistent MySQL** (recommended after setup above):
+**Important:** Only **one** backend can use port **8080**. If you see `Port 8080 was already in use`, you already have a server running — do **not** run `mvn spring-boot:run` again.
+
+**Recommended (Windows)** — stops the old process, then starts fresh:
+
+```powershell
+.\scripts\start-backend.ps1
+```
+
+With MySQL profile explicitly:
+
+```powershell
+.\scripts\start-backend.ps1 -MySql
+```
+
+Stop without starting:
+
+```powershell
+.\scripts\stop-backend.ps1
+```
+
+Or from `backend/`:
+
+```powershell
+.\run.ps1
+```
+
+Manual start (only if port 8080 is free — check with `netstat -ano | findstr :8080`):
 
 ```powershell
 cd backend
@@ -89,14 +118,9 @@ $env:SPRING_PROFILES_ACTIVE = "mysql"
 mvn spring-boot:run
 ```
 
-**Quick demo without MySQL** (in-memory only):
-
-```powershell
-cd backend
-mvn spring-boot:run
-```
-
 - API base URL: `http://localhost:8080/api`
+- Health: `http://localhost:8080/api/auth/health`
+- Logs: `backend/logs/application.log`
 - Swagger UI: `http://localhost:8080/api/swagger-ui/index.html`
 
 ### Frontend
@@ -169,6 +193,8 @@ Import `postman/AI-Resume-Screening.postman_collection.json`.
 | POST | `/linkedin/verify/{candidateId}` | Selenium-assisted discovery |
 | GET | `/linkedin/{candidateId}/logs` | Verification history |
 | GET | `/reports/candidates.xlsx` / `.pdf` | Export filtered candidate sets |
+| GET | `/reports/candidates/{id}.xlsx` / `.pdf` | Export one candidate |
+| POST | `/reports/candidates/bulk-export` | ZIP export for selected candidate IDs |
 | POST | `/chat` | HR assistant chatbot |
 
 All secured routes expect `Authorization: Bearer <JWT>`.

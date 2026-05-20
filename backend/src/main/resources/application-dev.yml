@@ -1,8 +1,8 @@
-# Local dev without MySQL — use: mvn spring-boot:run -Dspring-boot.run.profiles=dev
-# (dev profile is active by default in application.yml)
+# Optional H2 profile — activate with SPRING_PROFILES_ACTIVE=dev
+# File-based H2 under user home; use only when MySQL is not available.
 spring:
   datasource:
-    url: jdbc:h2:mem:ai_resume_screening;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    url: jdbc:h2:file:${user.home}/ai-resume-screening/h2-data/ai_resume_screening;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password:

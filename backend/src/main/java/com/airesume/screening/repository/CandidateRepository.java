@@ -20,6 +20,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long>, Jpa
 
     long countByStatus(CandidateStatus status);
 
+    long countByJobDescriptionId(Long jobDescriptionId);
+
     @Query("SELECT c FROM Candidate c WHERE " +
            "LOWER(c.fullName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
            "LOWER(c.email) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

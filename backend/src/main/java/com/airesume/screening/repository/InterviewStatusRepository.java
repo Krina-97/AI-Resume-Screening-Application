@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface InterviewStatusRepository extends JpaRepository<InterviewStatus, Long> {
     List<InterviewStatus> findByCandidateId(Long candidateId);
+
+    void deleteByCandidateId(Long candidateId);
 }

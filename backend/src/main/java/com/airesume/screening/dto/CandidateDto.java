@@ -22,7 +22,11 @@ public class CandidateDto {
     String certifications;
     String linkedinUrl;
     String aiSummary;
+    String hrNotes;
+    CandidateOverviewDto overview;
     CandidateStatus status;
     BigDecimal latestMatchScore;
+    String matchingSkills;
+    String missingSkills;
     LocalDateTime createdAt;
 }

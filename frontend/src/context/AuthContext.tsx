@@ -1,5 +1,9 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import api from '../services/api';
+
+const AUTH_TOKEN_KEY = 'token';
+const AUTH_USERNAME_KEY = 'username';
+const AUTH_ROLE_KEY = 'role';
 
 type AuthState = {
   token: string | null;
@@ -11,25 +15,22 @@ type AuthState = {
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
+function persistSession(token: string, username: string, role: string) {
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+  localStorage.setItem(AUTH_USERNAME_KEY, username);
+  localStorage.setItem(AUTH_ROLE_KEY, role);
+}
+
+function clearSession() {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem(AUTH_USERNAME_KEY);
+  localStorage.removeItem(AUTH_ROLE_KEY);
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
-  const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username'));
-  const [role, setRole] = useState<string | null>(() => localStorage.getItem('role'));
-
-  useEffect(() => {
-    if (token) localStorage.setItem('token', token);
-    else localStorage.removeItem('token');
-  }, [token]);
-
-  useEffect(() => {
-    if (username) localStorage.setItem('username', username);
-    else localStorage.removeItem('username');
-  }, [username]);
-
-  useEffect(() => {
-    if (role) localStorage.setItem('role', role);
-    else localStorage.removeItem('role');
-  }, [role]);
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem(AUTH_TOKEN_KEY));
+  const [username, setUsername] = useState<string | null>(() => localStorage.getItem(AUTH_USERNAME_KEY));
+  const [role, setRole] = useState<string | null>(() => localStorage.getItem(AUTH_ROLE_KEY));
 
   const value = useMemo(
     () => ({
@@ -44,15 +45,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!data?.token) {
           throw new Error('Login succeeded but no token was returned.');
         }
+        // Write before React state updates so the next API call (dashboard, candidates) has the JWT.
+        persistSession(data.token, data.username, data.role);
         setToken(data.token);
         setUsername(data.username);
         setRole(data.role);
       },
       logout: () => {
+        clearSession();
         setToken(null);
         setUsername(null);
         setRole(null);
-        localStorage.clear();
       }
     }),
     [token, username, role]

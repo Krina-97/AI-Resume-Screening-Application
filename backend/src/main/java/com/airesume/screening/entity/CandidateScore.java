@@ -43,6 +43,12 @@ public class CandidateScore {
     @Column(columnDefinition = "TEXT")
     private String recommendation;
 
+    @Column(name = "interview_pros", columnDefinition = "TEXT")
+    private String interviewPros;
+
+    @Column(name = "interview_cons", columnDefinition = "TEXT")
+    private String interviewCons;
+
     @CreationTimestamp
     @Column(name = "scored_at", updatable = false)
     private LocalDateTime scoredAt;

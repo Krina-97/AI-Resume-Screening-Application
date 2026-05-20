@@ -14,4 +14,6 @@ public class ResumeMatchResult {
     List<String> matchingSkills;
     String fitmentSummary;
     String recommendation;
+    List<String> interviewPros;
+    List<String> interviewCons;
 }

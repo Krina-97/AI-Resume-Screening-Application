@@ -4,6 +4,7 @@ import com.airesume.screening.config.AppProperties;
 import com.airesume.screening.dto.CandidateScoreDto;
 import com.airesume.screening.dto.ResumeUploadResponse;
 import com.airesume.screening.entity.Candidate;
+import com.airesume.screening.entity.CandidateStatus;
 import com.airesume.screening.entity.JobDescription;
 import com.airesume.screening.entity.Resume;
 import com.airesume.screening.exception.ApiException;
@@ -14,6 +15,7 @@ import com.airesume.screening.service.ai.AiEngineService;
 import com.airesume.screening.service.ai.ResumeExtractionResult;
 import com.airesume.screening.utils.FileValidationUtils;
 import com.airesume.screening.utils.HashUtils;
+import com.airesume.screening.utils.TextFormatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -99,34 +102,72 @@ public class ResumeIngestionService {
 
         ResumeExtractionResult extraction = aiEngineService.extractFromResumeText(rawText);
 
+        Long effectiveJobId = jobDescriptionId;
+        if (effectiveJobId == null) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                    "Select a job description to evaluate this resume against.");
+        }
+        JobDescription job = jobDescriptionRepository.findById(effectiveJobId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Job description not found"));
+
         Candidate candidate = Candidate.builder()
                 .resumeId(resume.getId())
-                .jobDescriptionId(jobDescriptionId)
-                .fullName(extraction.getFullName())
+                .jobDescriptionId(effectiveJobId)
+                .fullName(TextFormatUtils.toTitleCaseName(extraction.getFullName()))
                 .email(extraction.getEmail())
                 .phone(extraction.getPhone())
                 .skills(extraction.getSkills())
+                .strengths(extraction.getStrengths())
                 .experience(extraction.getExperience())
                 .education(extraction.getEducation())
                 .certifications(extraction.getCertifications())
                 .linkedinUrl(StringUtils.hasText(extraction.getLinkedinUrl()) ? extraction.getLinkedinUrl() : null)
                 .aiSummary(extraction.getAiSummary())
                 .duplicateHash(duplicateHash)
+                .status(CandidateStatus.NEW)
                 .build();
         candidateRepository.save(candidate);
 
-        if (jobDescriptionId != null) {
-            JobDescription jd = jobDescriptionRepository.findById(jobDescriptionId)
-                    .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Job description not found"));
-            CandidateScoreDto score = candidateScoreService.scoreCandidate(candidate.getId(), jd.getId(), rawText);
-            log.info("Initial AI score for candidate {}: {}", candidate.getId(), score.getMatchScore());
+        BigDecimal matchScore = null;
+        CandidateStatus assignedStatus = CandidateStatus.NEW;
+        String resultMessage = "Resume saved. AI evaluation could not be completed — status set to New.";
+
+        try {
+            CandidateScoreDto score = candidateScoreService.scoreCandidate(candidate.getId(), effectiveJobId, rawText);
+            matchScore = score.getMatchScore();
+            assignedStatus = CandidatePipelineRules.statusFromMatchPercent(matchScore);
+            candidate.setStatus(assignedStatus);
+            candidate.setAiSummary(CandidateOverviewBuilder.formatStoredOverview(candidate, score, job.getTitle()));
+            candidateRepository.save(candidate);
+            resultMessage = String.format(
+                    "Match score: %.1f%% against \"%s\". Status set to %s (%s).",
+                    matchScore.doubleValue(),
+                    job.getTitle(),
+                    formatStatusLabel(assignedStatus),
+                    CandidatePipelineRules.statusRuleDescription());
+            log.info("Candidate {} evaluated: {}% → {}", candidate.getId(), matchScore, assignedStatus);
+        } catch (Exception e) {
+            log.warn("Candidate {} saved but job evaluation failed for job {}: {}",
+                    candidate.getId(), effectiveJobId, e.getMessage());
         }
 
         return ResumeUploadResponse.builder()
                 .resumeId(resume.getId())
                 .candidateId(candidate.getId())
-                .message("Resume processed successfully")
+                .message(resultMessage)
                 .possibleDuplicate(duplicate.isPresent())
+                .matchScore(matchScore)
+                .assignedStatus(assignedStatus.name())
+                .jobDescriptionId(effectiveJobId)
                 .build();
+    }
+
+    private static String formatStatusLabel(CandidateStatus status) {
+        return switch (status) {
+            case REJECTED -> "Rejected";
+            case SHORTLISTED -> "Shortlisted";
+            case INTERVIEW_SCHEDULED -> "Interview scheduled";
+            case NEW -> "New";
+        };
     }
 }

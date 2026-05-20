@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:mysql}
   application:
     name: ai-resume-screening
   datasource:
@@ -61,8 +61,14 @@ logging:
   level:
     root: INFO
     com.airesume.screening: DEBUG
+    com.airesume.screening.controller.ReportController: INFO
+    com.airesume.screening.service.ReportExportService: DEBUG
+    com.airesume.screening.config.ApiRequestLoggingFilter: INFO
   file:
     name: logs/application.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
 
 springdoc:
   api-docs:

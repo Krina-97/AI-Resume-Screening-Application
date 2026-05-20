@@ -9,3 +9,4 @@ uploads/
 *.log
 .env
 .env.local
+.env.example

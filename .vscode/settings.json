@@ -1,8 +1,0 @@
-{
-  "git.enabled": true,
-  "git.autoRepositoryDetection": true,
-  "git.openRepositoryInParentFolders": true,
-  "git.repositoryScanMaxDepth": -1,
-  "git.untrackedChanges": "mixed",
-  "scm.defaultViewMode": "tree"
-}

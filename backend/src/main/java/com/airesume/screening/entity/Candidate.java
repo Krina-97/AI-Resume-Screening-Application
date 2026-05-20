@@ -36,6 +36,9 @@ public class Candidate {
     private String skills;
 
     @Column(columnDefinition = "TEXT")
+    private String strengths;
+
+    @Column(columnDefinition = "TEXT")
     private String experience;
 
     @Column(columnDefinition = "TEXT")
@@ -49,6 +52,9 @@ public class Candidate {
 
     @Column(name = "ai_summary", columnDefinition = "TEXT")
     private String aiSummary;
+
+    @Column(name = "hr_notes", columnDefinition = "TEXT")
+    private String hrNotes;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default

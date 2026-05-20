@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  ::selection {
+    @apply bg-brand-500/25 text-brand-900 dark:bg-brand-400/25 dark:text-white;
+  }
+}
+
+@layer utilities {
+  .input-field {
+    @apply w-full rounded-xl border border-slate-200/90 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none ring-brand-500/0 transition-[box-shadow,border-color] placeholder:text-slate-400 focus:border-brand-400 focus:ring-4 focus:ring-brand-500/15 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500;
+  }
+  .status-select {
+    @apply min-w-[10.75rem] whitespace-nowrap py-2 pl-2.5 pr-9 text-xs leading-snug;
+  }
+}
+
 body {
   @apply antialiased text-slate-900 dark:text-slate-100;
+}
+
+/* Thin scrollbars — matches dashboard aesthetic */
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-auto::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.overflow-auto::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-300 dark:bg-slate-600;
 }

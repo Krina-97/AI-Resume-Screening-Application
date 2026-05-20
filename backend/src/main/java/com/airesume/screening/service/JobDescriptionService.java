@@ -5,6 +5,9 @@ import com.airesume.screening.dto.JobDescriptionRequest;
 import com.airesume.screening.entity.JobDescription;
 import com.airesume.screening.exception.ApiException;
 import com.airesume.screening.mapper.JobDescriptionMapper;
+import com.airesume.screening.entity.Candidate;
+import com.airesume.screening.repository.CandidateRepository;
+import com.airesume.screening.repository.CandidateScoreRepository;
 import com.airesume.screening.repository.JobDescriptionRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,11 +19,17 @@ import java.util.List;
 public class JobDescriptionService {
 
     private final JobDescriptionRepository jobDescriptionRepository;
+    private final CandidateRepository candidateRepository;
+    private final CandidateScoreRepository candidateScoreRepository;
     private final JobDescriptionMapper jobDescriptionMapper;
 
     public JobDescriptionService(JobDescriptionRepository jobDescriptionRepository,
+                                 CandidateRepository candidateRepository,
+                                 CandidateScoreRepository candidateScoreRepository,
                                  JobDescriptionMapper jobDescriptionMapper) {
         this.jobDescriptionRepository = jobDescriptionRepository;
+        this.candidateRepository = candidateRepository;
+        this.candidateScoreRepository = candidateScoreRepository;
         this.jobDescriptionMapper = jobDescriptionMapper;
     }
 
@@ -60,5 +69,18 @@ public class JobDescriptionService {
     public JobDescription getEntity(Long id) {
         return jobDescriptionRepository.findById(id)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Job description not found"));
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        jobDescriptionRepository.findById(id)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Job description not found"));
+
+        candidateScoreRepository.deleteByJobDescriptionId(id);
+        for (Candidate candidate : candidateRepository.findByJobDescriptionIdOrderByCreatedAtDesc(id)) {
+            candidate.setJobDescriptionId(null);
+            candidateRepository.save(candidate);
+        }
+        jobDescriptionRepository.deleteById(id);
     }
 }

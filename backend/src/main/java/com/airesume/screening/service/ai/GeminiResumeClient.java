@@ -35,7 +35,8 @@ public class GeminiResumeClient implements AiResumeClient {
 
     @Override
     public boolean isAvailable() {
-        return appProperties.getGemini().isEnabled() && StringUtils.hasText(appProperties.getGemini().getApiKey());
+        return StringUtils.hasText(appProperties.getGemini().getApiKey())
+                && appProperties.getGemini().isEnabled();
     }
 
     public String generatePlain(String systemPrompt, String userPrompt) {

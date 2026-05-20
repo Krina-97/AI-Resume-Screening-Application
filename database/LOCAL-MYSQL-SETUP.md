@@ -2,8 +2,8 @@
 
 The app stores **users**, **job descriptions**, **candidates**, **scores**, **interviews**, and related data in **MySQL**.
 
-By default the backend uses the **`dev`** profile (in-memory **H2** — data is lost when you stop the server).  
-To keep data on your machine, use **MySQL** with the **`mysql`** profile.
+By default the backend uses the **`dev`** profile (**H2** stored under your user home — data **survives** normal backend restarts; see `application-dev.yml`).  
+To keep data in **MySQL** or share with a team, use **MySQL** with the **`mysql`** profile.
 
 ---
 
@@ -22,6 +22,40 @@ To keep data on your machine, use **MySQL** with the **`mysql`** profile.
 Resume **files** (PDF/DOCX) are stored on disk at:
 
 `C:\Users\KRINA\ai-resume-screening\uploads\resumes`
+
+---
+
+## Using a MySQL database you created yourself
+
+No extra code is required: the API already reads and writes **job descriptions** (and users, candidates, etc.) through JPA.
+
+1. **Create an empty database** (any name you like), or use `ai_resume_screening` to match the defaults.
+2. **Optional:** run `database/schema.sql` in Workbench or `mysql` CLI so tables match production exactly. If you skip this, with `spring.jpa.hibernate.ddl-auto: update` the app will create/update tables on first start — fine for local dev.
+3. **Start the backend with the `mysql` profile** and credentials that match **your** server:
+
+```powershell
+cd "path\to\ai-resume-screening-tool\backend"
+
+$env:SPRING_PROFILES_ACTIVE = "mysql"
+$env:DB_HOST = "localhost"
+$env:DB_PORT = "3306"
+$env:DB_NAME = "ai_resume_screening"   # <- change to YOUR database name
+$env:DB_USERNAME = "root"              # <- your MySQL user
+$env:DB_PASSWORD = "your_password"     # <- your MySQL password
+
+mvn spring-boot:run
+```
+
+4. On first connect to an **empty** database, the app seeds **users** (`hruser`, `admin`) and **three sample jobs** if those tables are empty — then you can add more jobs from the UI; they are stored in **`job_descriptions`**.
+
+5. Confirm in MySQL:
+
+```sql
+USE your_database_name;
+SELECT id, title FROM job_descriptions;
+```
+
+**If login fails with DB errors:** MySQL must be running, port must match `DB_PORT`, and the user must have `CREATE`/`ALTER` rights if you rely on Hibernate to create tables.
 
 ---
 
@@ -138,7 +172,7 @@ SELECT id, title FROM job_descriptions;
 SELECT id, full_name, email, status FROM candidates;
 ```
 
-**Or** use the app: create jobs and upload resumes, restart the backend — data should still be there (unlike H2 `dev` in-memory).
+**Or** use the app: create jobs and upload resumes, restart the backend — with **`dev`** (file H2) or **`mysql`**, data should still be there.
 
 ---
 
@@ -146,10 +180,10 @@ SELECT id, full_name, email, status FROM candidates;
 
 | | `dev` profile (default) | `mysql` profile |
 |--|-------------------------|-----------------|
-| Database | H2 in memory | MySQL on disk |
-| Data after restart | **Lost** | **Kept** |
+| Database | H2 file under `%USERPROFILE%\ai-resume-screening\h2-data\` (Windows) | MySQL on disk |
+| Data after restart | **Kept** (same machine / same H2 files) | **Kept** |
 | Setup | None | Docker or MySQL install |
-| Good for | Quick try | Real local testing |
+| Good for | Solo local dev | Shared DB, Workbench |
 
 ---
 

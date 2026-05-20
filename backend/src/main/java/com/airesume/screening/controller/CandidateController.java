@@ -6,6 +6,7 @@ import com.airesume.screening.service.CandidateScoreService;
 import com.airesume.screening.service.CandidateService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,21 @@ public class CandidateController {
         return candidateService.search(jobId, status, q);
     }
 
+    /** Static paths must be declared before /{id} so segments like "bulk-delete" are not treated as an id. */
+    @GetMapping("/recommendations")
+    @Operation(summary = "Candidate recommendation engine for a job (top match scores)")
+    public List<CandidateDto> recommend(@RequestParam Long jobId,
+                                        @RequestParam(defaultValue = "10") int limit) {
+        return candidateService.topForJob(jobId, limit);
+    }
+
+    @PostMapping("/bulk-delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete multiple candidates and related data")
+    public void bulkDelete(@Valid @RequestBody CandidateBulkDeleteRequest request) {
+        candidateService.deleteMany(request.getIds());
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get candidate details")
     public CandidateDto get(@PathVariable Long id) {
@@ -43,10 +59,17 @@ public class CandidateController {
         return candidateService.update(id, request);
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete candidate and related resume/scores")
+    public void delete(@PathVariable Long id) {
+        candidateService.delete(id);
+    }
+
     @PostMapping("/{id}/score")
     @Operation(summary = "Compute or refresh AI match score for a job")
-    public CandidateScoreDto score(@PathVariable Long id, @RequestParam Long jobDescriptionId) {
-        return candidateScoreService.scoreCandidate(id, jobDescriptionId, null);
+    public CandidateDto score(@PathVariable Long id, @RequestParam Long jobDescriptionId) {
+        candidateScoreService.scoreCandidate(id, jobDescriptionId, null);
+        return candidateService.get(id);
     }
 
     @PostMapping("/{id}/interviews")
@@ -62,12 +85,5 @@ public class CandidateController {
             candidateScoreService.scoreCandidate(id, jobId, null);
         }
         return candidateService.compareAcrossJobs(id, request.getJobDescriptionIds());
-    }
-
-    @GetMapping("/recommendations")
-    @Operation(summary = "Candidate recommendation engine for a job (top match scores)")
-    public List<CandidateDto> recommend(@RequestParam Long jobId,
-                                        @RequestParam(defaultValue = "10") int limit) {
-        return candidateService.topForJob(jobId, limit);
     }
 }

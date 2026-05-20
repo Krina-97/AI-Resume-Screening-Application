@@ -1,6 +1,7 @@
 package com.airesume.screening.service;
 
 import com.airesume.screening.exception.ApiException;
+import com.airesume.screening.utils.TextFormatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,22 @@ public class ResumeTextExtractorService {
 
     public String extractText(MultipartFile file, Path storedFile) {
         String name = file.getOriginalFilename() != null ? file.getOriginalFilename().toLowerCase() : "";
+        return extractFromPath(storedFile, name);
+    }
+
+    /** Re-parse resume text from a stored file (used when DB raw_text is empty). */
+    public String extractFromPath(Path storedFile) {
+        String name = storedFile.getFileName() != null ? storedFile.getFileName().toString().toLowerCase() : "";
+        return extractFromPath(storedFile, name);
+    }
+
+    private String extractFromPath(Path storedFile, String lowerName) {
         try {
-            if (name.endsWith(".pdf")) {
+            if (lowerName.endsWith(".pdf")) {
                 return extractPdf(storedFile);
             }
-            if (name.endsWith(".docx")) {
-                return extractDocx(storedFile);
+            if (lowerName.endsWith(".docx")) {
+                return TextFormatUtils.normalizeDisplayText(extractDocx(storedFile));
             }
             throw new ApiException(HttpStatus.BAD_REQUEST, "Unsupported resume format");
         } catch (IOException ex) {
@@ -34,7 +45,7 @@ public class ResumeTextExtractorService {
         try (org.apache.pdfbox.pdmodel.PDDocument document =
                      org.apache.pdfbox.Loader.loadPDF(path.toFile())) {
             org.apache.pdfbox.text.PDFTextStripper stripper = new org.apache.pdfbox.text.PDFTextStripper();
-            return stripper.getText(document);
+            return TextFormatUtils.normalizeDisplayText(stripper.getText(document));
         }
     }
 

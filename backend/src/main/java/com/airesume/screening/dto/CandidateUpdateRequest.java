@@ -7,4 +7,5 @@ import lombok.Data;
 public class CandidateUpdateRequest {
     private CandidateStatus status;
     private String linkedinUrl;
+    private String hrNotes;
 }

@@ -14,4 +14,5 @@ public class DashboardStatsDto {
     long interviewsScheduled;
     Double averageMatchScore;
     List<CandidateDto> topCandidates;
+    WorkQueueDto workQueue;
 }

@@ -1,8 +1,10 @@
 package com.airesume.screening.controller;
 
+import com.airesume.screening.dto.AiStatusDto;
 import com.airesume.screening.dto.AuthRequest;
 import com.airesume.screening.dto.AuthResponse;
 import com.airesume.screening.dto.RegisterRequest;
+import com.airesume.screening.service.AiStatusService;
 import com.airesume.screening.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -19,9 +21,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final AiStatusService aiStatusService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, AiStatusService aiStatusService) {
         this.authService = authService;
+        this.aiStatusService = aiStatusService;
     }
 
     @PostMapping("/register")
@@ -40,5 +44,11 @@ public class AuthController {
     @Operation(summary = "Backend reachability check (no auth)")
     public Map<String, String> health() {
         return Map.of("status", "UP");
+    }
+
+    @GetMapping("/ai-status")
+    @Operation(summary = "AI provider availability for the UI")
+    public AiStatusDto aiStatus() {
+        return aiStatusService.status();
     }
 }

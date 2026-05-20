@@ -5,6 +5,7 @@ import lombok.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Value
 @Builder
@@ -17,5 +18,7 @@ public class CandidateScoreDto {
     String matchingSkills;
     String fitmentSummary;
     String recommendation;
+    List<String> interviewPros;
+    List<String> interviewCons;
     LocalDateTime scoredAt;
 }

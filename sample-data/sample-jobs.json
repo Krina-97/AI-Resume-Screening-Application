@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Senior Java Backend Engineer",
+    "department": "Engineering",
+    "location": "Remote (India)",
+    "experienceRequired": "5+ years",
+    "requiredSkills": "Java, Spring Boot, REST APIs, SQL, MySQL, Git, unit testing, microservices",
+    "preferredSkills": "React, Docker, Kubernetes, AWS, CI/CD, Redis",
+    "description": "We are hiring a Senior Java Backend Engineer to build and maintain HR and analytics APIs for our resume screening platform.\n\nResponsibilities:\n- Design and develop REST APIs using Java 17 and Spring Boot\n- Implement business logic, validation, and security (JWT)\n- Work with MySQL and JPA/Hibernate for persistent data\n- Integrate third-party AI services for resume parsing and job matching\n- Write unit and integration tests; participate in code reviews\n- Collaborate with frontend (React) and DevOps on deployment\n\nRequirements:\n- 5+ years of professional backend development\n- Strong Java and Spring Boot experience\n- Solid SQL and relational database design (MySQL preferred)\n- Experience with REST, JSON, and API documentation (Swagger/OpenAPI)\n- Understanding of authentication, error handling, and layered architecture\n\nNice to have:\n- Docker, Kubernetes, or cloud (AWS/GCP)\n- Experience with HR/recruitment or document processing (PDF/DOCX)\n- Familiarity with React or TypeScript for full-stack collaboration",
+    "active": true
+  },
+  {
+    "title": "Frontend React Developer",
+    "department": "Product Engineering",
+    "location": "Hybrid - Bangalore",
+    "experienceRequired": "3+ years",
+    "requiredSkills": "React, TypeScript, HTML, CSS, REST APIs, responsive design, Git",
+    "preferredSkills": "Tailwind CSS, Vite, Jest, React Router, Recharts, accessibility (WCAG)",
+    "description": "Join the product team to deliver modern HR dashboards for resume screening and candidate ranking.\n\nResponsibilities:\n- Build responsive UI with React 18, TypeScript, and Tailwind CSS\n- Integrate with Spring Boot REST APIs (auth, jobs, candidates, uploads)\n- Implement forms, tables, filters, and data visualizations for recruiters\n- Improve UX for resume upload, job selection, and pipeline status updates\n- Write component tests and fix accessibility and performance issues\n\nRequirements:\n- 3+ years frontend development with React\n- Strong TypeScript and modern CSS (Flexbox/Grid)\n- Experience consuming REST APIs and handling auth tokens\n- Attention to detail for enterprise HR workflows\n\nNice to have:\n- Vite, React Router, chart libraries (Recharts)\n- Experience with design systems or dark mode theming\n- Basic understanding of Java/Spring Boot APIs",
+    "active": true
+  },
+  {
+    "title": "Data Analyst - HR Analytics",
+    "department": "Analytics",
+    "location": "On-site - Mumbai",
+    "experienceRequired": "2+ years",
+    "requiredSkills": "SQL, Excel, Python, statistics, data visualization, Power BI, reporting",
+    "preferredSkills": "Tableau, ETL, MySQL, pandas, hiring/recruitment metrics",
+    "description": "Support HR leadership with hiring funnel analytics, candidate pipeline reporting, and data quality for the AI resume screening platform.\n\nResponsibilities:\n- Write SQL queries against MySQL for candidates, jobs, scores, and statuses\n- Build Power BI dashboards for time-to-hire, source quality, and match score trends\n- Clean and validate candidate and job data imported from resumes and uploads\n- Partner with engineering to define metrics and export requirements\n- Present insights to HR and hiring managers in clear, actionable language\n\nRequirements:\n- 2+ years in analytics or business intelligence\n- Strong SQL and Excel; comfortable with Python for ad-hoc analysis\n- Experience building dashboards and explaining data to non-technical stakeholders\n- Basic statistics (distributions, trends, cohort analysis)\n\nNice to have:\n- Tableau or similar BI tools\n- Familiarity with HR/recruitment KPIs\n- Experience with ETL or data modeling",
+    "active": true
+  }
+]
