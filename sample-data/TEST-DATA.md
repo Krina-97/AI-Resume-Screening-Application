@@ -1,18 +1,20 @@
 # Test data guide — AI Resume Screening Tool
 
-Use this while **backend** (`mvn spring-boot:run`) and **frontend** (`npm.cmd run dev`) are running.
+Use this while **backend** (`mvn spring-boot:run`) and **frontend** (`npm.cmd run dev`) are runnin
 
 ---
 
 ## 1. Login accounts (auto-created on first backend start)
 
-| Username | Password     | Role  | Use for                          |
-|----------|--------------|-------|----------------------------------|
-| `hruser` | `Hr@123456`  | HR    | Normal testing (upload, jobs)    |
-| `admin`  | `Admin@123`  | ADMIN | Admin analytics (`/analytics/admin/summary`) |
 
-**UI:** http://localhost:5173/login  
-**API health:** http://localhost:8080/api/auth/health → `{"status":"UP"}`
+| Username | Password    | Role  | Use for                                      |
+| -------- | ----------- | ----- | -------------------------------------------- |
+| `hruser` | `Hr@123456` | HR    | Normal testing (upload, jobs)                |
+| `admin`  | `Admin@123` | ADMIN | Admin analytics (`/analytics/admin/summary`) |
+
+
+**UI:** [http://localhost:5173/login](http://localhost:5173/login)  
+**API health:** [http://localhost:8080/api/auth/health](http://localhost:8080/api/auth/health) → `{"status":"UP"}`
 
 ---
 
@@ -56,16 +58,18 @@ After login, create these jobs (or rely on auto-seed — see `jobs-reference.jso
 
 Plain-text sources are in `sample-data/resumes/`:
 
-| File | Candidate        | Best job match | Expected outcome        |
-|------|------------------|----------------|-------------------------|
-| `priya-sharma.txt` | Priya Sharma   | Job A (Java)   | High score (~70–95 with AI) |
-| `alex-kumar.txt`   | Alex Kumar     | Job A (Java)   | High score                |
-| `jordan-lee.txt`   | Jordan Lee     | Job B (React)  | High score                |
+
+| File               | Candidate    | Best job match | Expected outcome            |
+| ------------------ | ------------ | -------------- | --------------------------- |
+| `priya-sharma.txt` | Priya Sharma | Job A (Java)   | High score (~70–95 with AI) |
+| `alex-kumar.txt`   | Alex Kumar   | Job A (Java)   | High score                  |
+| `jordan-lee.txt`   | Jordan Lee   | Job B (React)  | High score                  |
+
 
 **How to upload**
 
-1. Open each `.txt` in Word / Google Docs → **Save as PDF** or **DOCX**.  
-2. In the app: **Candidates** → choose file → set **Job ID** (e.g. `1`) → **Upload & parse**.  
+1. Open each `.txt` in Word / Google Docs → **Save as PDF** or **DOCX**.
+2. In the app: **Candidates** → choose file → set **Job ID** (e.g. `1`) → **Upload & parse**.
 3. Or use any real PDF resume you already have.
 
 **Contacts in sample files (for LinkedIn verify test)**
@@ -78,17 +82,19 @@ Plain-text sources are in `sample-data/resumes/`:
 
 ## 4. Suggested end-to-end test script
 
-| Step | Action | Expected result |
-|------|--------|-----------------|
-| 1 | Login as `hruser` | Dashboard loads |
-| 2 | Create Job A (or use seeded job id `1`) | Job appears in Jobs list |
-| 3 | Upload `priya-sharma.pdf` with Job ID `1` | Candidate row; match score populated |
-| 4 | Upload `jordan-lee.pdf` with Job ID `1` | Lower score vs Java job |
-| 5 | Filter candidates by status `NEW` | Both visible |
-| 6 | Shortlist Priya (PATCH status) | Status = SHORTLISTED |
-| 7 | Export Excel `/api/reports/candidates.xlsx` | File downloads |
-| 8 | (Optional) `POST /api/linkedin/verify/{candidateId}` | Log + screenshot path (Selenium) |
-| 9 | Login as `admin` | Admin summary endpoint works |
+
+| Step | Action                                               | Expected result                      |
+| ---- | ---------------------------------------------------- | ------------------------------------ |
+| 1    | Login as `hruser`                                    | Dashboard loads                      |
+| 2    | Create Job A (or use seeded job id `1`)              | Job appears in Jobs list             |
+| 3    | Upload `priya-sharma.pdf` with Job ID `1`            | Candidate row; match score populated |
+| 4    | Upload `jordan-lee.pdf` with Job ID `1`              | Lower score vs Java job              |
+| 5    | Filter candidates by status `NEW`                    | Both visible                         |
+| 6    | Shortlist Priya (PATCH status)                       | Status = SHORTLISTED                 |
+| 7    | Export Excel `/api/reports/candidates.xlsx`          | File downloads                       |
+| 8    | (Optional) `POST /api/linkedin/verify/{candidateId}` | Log + screenshot path (Selenium)     |
+| 9    | Login as `admin`                                     | Admin summary endpoint works         |
+
 
 ---
 
@@ -128,15 +134,15 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/resumes/upload" -Method POST `
   -Headers $headers -Form $form
 ```
 
-Import **`postman/AI-Resume-Screening.postman_collection.json`** for more endpoints.
+Import `**postman/AI-Resume-Screening.postman_collection.json**` for more endpoints.
 
 ---
 
 ## 6. AI behavior notes
 
-- Set **`OPENAI_API_KEY`** for best extraction and scoring.  
+- Set `**OPENAI_API_KEY**` for best extraction and scoring.  
 - Without a key, the app uses **keyword heuristics** (scores still appear, less accurate).  
-- Duplicate upload of the same resume text triggers **`possibleDuplicate: true`**.
+- Duplicate upload of the same resume text triggers `**possibleDuplicate: true`**.
 
 ---
 
