@@ -1,0 +1,26 @@
+JORDAN LEE
+Email: jordan.lee@gmail.com
+Phone: +91 99887 76655
+LinkedIn: https://www.linkedin.com/in/jordanlee-react
+Bengaluru, India
+
+SUMMARY
+Frontend developer with 4 years creating responsive web apps with React, TypeScript, and modern CSS. Passionate about HR tech UX and accessible design.
+
+SKILLS
+React, TypeScript, JavaScript, HTML5, CSS3, Tailwind CSS, Vite, Axios, React Router, Jest, React Testing Library, REST API integration, Git
+
+EXPERIENCE
+PeopleFirst HR — Frontend Engineer (2022 – Present)
+- Built recruiter dashboard with charts, filters, and dark mode
+- Integrated React SPA with Spring Boot backend using JWT auth
+- Improved Lighthouse performance score from 62 to 91
+
+WebCraft Studio — Junior Frontend Developer (2020 – 2022)
+- Implemented component library and form validation flows
+
+EDUCATION
+B.E. Information Science, RV College of Engineering, 2020
+
+CERTIFICATIONS
+Meta Front-End Developer Professional Certificate

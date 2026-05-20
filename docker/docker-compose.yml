@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ai_resume_screening
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/backend.Dockerfile
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ai_resume_screening
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      JWT_SECRET: change-this-32-char-secret-key-123456
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      AI_PROVIDER: ${AI_PROVIDER:-openai}
+      UPLOAD_DIR: /data/uploads
+      SELENIUM_ENABLED: 'false'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+    volumes:
+      - backend_uploads:/data/uploads
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data: {}
+  backend_uploads: {}

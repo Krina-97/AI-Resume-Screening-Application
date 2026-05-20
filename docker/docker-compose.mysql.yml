@@ -1,0 +1,26 @@
+# MySQL only — persistent data on your machine (Docker volume mysql_data)
+# Start:  docker compose -f docker-compose.mysql.yml up -d
+# Stop:   docker compose -f docker-compose.mysql.yml down
+# Data survives stop/start. To wipe: docker compose -f docker-compose.mysql.yml down -v
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ai-resume-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ai_resume_screening
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uroot', '-proot']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:

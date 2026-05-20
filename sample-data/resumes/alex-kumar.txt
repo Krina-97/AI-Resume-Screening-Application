@@ -1,0 +1,27 @@
+ALEX KUMAR
+Email: alex.kumar@outlook.com
+Phone: +1 415 555 0198
+LinkedIn: https://www.linkedin.com/in/alexkumar-java
+San Francisco, CA
+
+PROFESSIONAL SUMMARY
+Backend engineer focused on scalable Java services, event-driven architecture, and cloud deployment on AWS. 7 years in product companies.
+
+TECHNICAL SKILLS
+Java 17, Spring Boot, Spring Data JPA, Kafka, PostgreSQL, SQL, Kubernetes, Docker, CI/CD, REST, GraphQL (exposure)
+
+WORK HISTORY
+CloudHire Inc — Staff Engineer (2020 – Present)
+- Owned candidate matching service used by 200+ enterprise clients
+- Migrated monolith modules to Spring Boot microservices
+- Implemented JWT authentication and role-based access
+
+DataStack — Software Engineer (2017 – 2020)
+- Developed reporting APIs and batch ETL jobs in Java
+
+EDUCATION
+MS Computer Science, San Jose State University, 2017
+BS Information Technology, 2015
+
+CERTIFICATIONS
+Certified Kubernetes Application Developer (CKAD)

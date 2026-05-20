@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Senior Java Engineer",
+    "department": "Engineering",
+    "location": "Remote",
+    "experienceRequired": "5+ years",
+    "requiredSkills": "Java, Spring Boot, SQL, REST, Microservices",
+    "preferredSkills": "React, Kubernetes, AWS, Docker",
+    "description": "Build and maintain HR analytics microservices. Own API design, code reviews, unit/integration tests, and production support. Mentor junior developers.",
+    "active": true
+  },
+  {
+    "title": "Frontend React Developer",
+    "department": "Product Engineering",
+    "location": "Hybrid — Bangalore",
+    "experienceRequired": "3+ years",
+    "requiredSkills": "React, TypeScript, HTML, CSS, REST APIs",
+    "preferredSkills": "Tailwind CSS, Vite, Jest",
+    "description": "Implement responsive HR dashboards, integrate with Spring Boot APIs, and improve accessibility and performance.",
+    "active": true
+  },
+  {
+    "title": "Data Analyst",
+    "department": "Analytics",
+    "location": "On-site — Mumbai",
+    "experienceRequired": "2+ years",
+    "requiredSkills": "SQL, Excel, Power BI, Python, Statistics",
+    "preferredSkills": "Tableau, ETL",
+    "description": "Build reports and dashboards for hiring metrics. Clean and model candidate pipeline data.",
+    "active": true
+  }
+]

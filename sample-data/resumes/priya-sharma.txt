@@ -1,0 +1,28 @@
+PRIYA SHARMA
+Email: priya.sharma@email.com
+Phone: +91 98765 43210
+LinkedIn: https://www.linkedin.com/in/priyasharma-dev
+Location: Pune, India
+
+SUMMARY
+Senior software engineer with 6 years building enterprise Java applications and REST APIs. Experienced in Spring Boot, microservices, MySQL, and agile delivery for HR and fintech products.
+
+SKILLS
+Java, Spring Boot, Spring Security, Hibernate, SQL, MySQL, REST APIs, Microservices, Docker, Git, JUnit, Maven, React (basic)
+
+EXPERIENCE
+TechNova Solutions — Senior Java Developer (2021 – Present)
+- Designed Spring Boot microservices for employee onboarding and document workflows
+- Improved API latency by 35% through query tuning and caching
+- Led code reviews and mentored 3 junior engineers
+
+InfoCore Pvt Ltd — Java Developer (2019 – 2021)
+- Built REST integrations with third-party payroll systems
+- Wrote unit and integration tests with JUnit and Mockito
+
+EDUCATION
+B.Tech Computer Science, Pune University, 2019
+
+CERTIFICATIONS
+Oracle Certified Professional: Java SE 11 Developer
+AWS Certified Cloud Practitioner

@@ -1,0 +1,71 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  application:
+    name: ai-resume-screening
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:ai_resume_screening}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:your-256-bit-secret-key-change-in-production-min-32-chars}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  upload:
+    dir: ${UPLOAD_DIR:${user.home}/ai-resume-screening/uploads/resumes}
+  selenium:
+    enabled: ${SELENIUM_ENABLED:true}
+    headless: ${SELENIUM_HEADLESS:true}
+    screenshot-dir: ${SELENIUM_SCREENSHOT_DIR:${user.home}/ai-resume-screening/uploads/screenshots}
+    linkedin-base-url: https://www.linkedin.com
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-4o-mini}
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    enabled: ${GEMINI_ENABLED:false}
+  ai-provider: ${AI_PROVIDER:openai}
+
+logging:
+  level:
+    root: INFO
+    com.airesume.screening: DEBUG
+  file:
+    name: logs/application.log
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Backend') {
+      steps {
+        dir('backend') {
+          sh 'mvn -B -DskipTests package'
+        }
+      }
+    }
+    stage('Frontend') {
+      steps {
+        dir('frontend') {
+          sh 'npm install'
+          sh 'npm run build'
+        }
+      }
+    }
+    stage('Archive') {
+      steps {
+        archiveArtifacts artifacts: 'backend/target/*.jar,frontend/dist/**', fingerprint: true
+      }
+    }
+  }
+}
